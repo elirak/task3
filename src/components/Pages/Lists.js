@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 import Select from "react-select";
 import { useSelector, useDispatch } from "react-redux";
-
 import allActions from '../../actions.js';
 import UserDetails from "./UserDetails.js";
+
+
 const UserList=()=>{
 
-    const users=useSelector(state=>state.users)
-
+    const users=useSelector(state=>state.selectUserReducer) 
+    const selected=useSelector(state=>state.selectUserReducer.selected);
     const dispatch=useDispatch();
 
     useEffect(()=>{
@@ -19,14 +20,15 @@ const UserList=()=>{
     const handleChange=(e)=>{
      
         const selectedUser=dispatch(allActions.selectUser(e)).payload;
-        console.log('list selected ', selectedUser);
+        
+         console.log('list selected ', selectedUser);
         
     };
 
   
 
     const renderList=()=>{
-       return users?.map(user=>{
+       return users?.items?.map(user=>{
             return ({
                         id:user.id,
                         label:user.name, value:user.name,
@@ -40,19 +42,26 @@ const UserList=()=>{
                         company:user.company
                     })
        });
-    }
-
-   
-
+    }  
+    
     return (
      
           <div>           
-    
+            <br/>
             <Select options={renderList()}
-                    value={users.value}
-                    onChange={(e)=>handleChange(e)} isMulti
-                    clearable={false}
-                    />    
+                    onChange={(e)=>handleChange(e)} 
+                    value={selected}
+                    isMulti
+                    hideSelectedOptions={true}
+                    controlShouldRenderValue={true}
+                    />      
+                    <br/>
+                   <div className="ui small buttons">
+                      <button  onClick={()=>dispatch(allActions.sort_acs(selected))}  className="ui button" >Ascending Sort</button>
+                      <div className="or"></div>
+                      <button onClick={()=>dispatch(allActions.sort_desc(selected))} className="ui button">Descending Sort</button>
+                    </div>
+                    <br/>
                     <UserDetails/>
                     <br/>
           </div>

@@ -1,33 +1,46 @@
 import React from 'react';
-import { useSelector,useDispatch } from 'react-redux';
-import {Link} from 'react-router-dom';
+import {useDispatch } from 'react-redux';
+
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle'
 import allActions from '../../actions.js';
-import  ReactDOM  from "react-dom";
 
-const DeleteUser=()=>{
+const DeleteUser=(props)=>{
 
-
-    const users=useSelector(state=>state.selectUserReducer)
     const dispatch=useDispatch();
-    return(
-      ReactDOM.createPortal(
-        <div className="ui dimmer modals visible active">
-  
-            <div className="ui standard modal visible active">
-                <div className="header">Delete a User</div>
-                <div className="content"> Are you sure you want to delete this stream?</div>
-                <div className="actions">
-                  <button onClick={()=>dispatch(allActions.deleteUser(users.items.id))} className="ui button negative">Delete</button>
-                  <Link to="/" className="ui button ">Cancel</Link>
-                </div>
-            </div>
-        </div>,
 
-        document.querySelector('#modal')
-    ))
+    return(
+
+    <Dialog 
+        open={props.open}
+        onClose={props.close}
+        userid={props.userid}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Delete a User"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+          Are you sure you want to delete this user?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={props.close}>Disagree</Button>
+          <Button autoFocus onClick={()=> { props.close(); dispatch(allActions.deleteUser(props.userid))}}>
+            Agree
+          </Button>
+        </DialogActions>
+  </Dialog>
+    )
 
      
 }
-
 
 export default DeleteUser
